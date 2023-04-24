@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap-5.2.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanuman:wght@300&family=Koulen&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container-fluid bar1" id="menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-12 col-xl-12 col-lg-12 menu">
+                    <ul>
+                        <!-- <li>
+                            <a href="">
+                                <i class="fa-sharp fa-solid fa-house"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                កម្សាន្ត
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                បច្ចេកវិទ្យា
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                សង្គម
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                កីឡា
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" id="item-data">
+            <!-- <div class="col-xxl-3 item-box">
+                <div class="box">
+                    <img src="img/c-1.jpg" alt="">
+                    <h1>Dembélé ស៊ុតមួយគ្រាប់ជួយកក់កៅអីវគ្គពាក់កណ្តាលផ្តាច់ព្រ័ត្តនៃពាន Copa del Rey ឲ្យក្លឹប Barcelona
+                    </h1>
+                </div>
+            </div>
+            <div class="col-xxl-3 item-box">
+                <div class="box">
+                    <img src="img/c-2.jpg" alt="">
+                    <h1>Dembélé ស៊ុតមួយគ្រាប់ជួយកក់កៅអីវគ្គពាក់កណ្តាលផ្តាច់ព្រ័ត្តនៃពាន Copa del Rey ឲ្យក្លឹប Barcelona
+                    </h1>
+                </div>
+            </div>
+            <div class="col-xxl-3 item-box">
+                <div class="box">
+                    <img src="img/c-3.jpg" alt="">
+                    <h1>Dembélé ស៊ុតមួយគ្រាប់ជួយកក់កៅអីវគ្គពាក់កណ្តាលផ្តាច់ព្រ័ត្តនៃពាន Copa del Rey ឲ្យក្លឹប Barcelona
+                    </h1>
+                </div>
+            </div>
+            <div class="col-xxl-3 item-box">
+                <div class="box">
+                    <img src="img/c-4.jpg" alt="">
+                    <h1>Dembélé ស៊ុតមួយគ្រាប់ជួយកក់កៅអីវគ្គពាក់កណ្តាលផ្តាច់ព្រ័ត្តនៃពាន Copa del Rey ឲ្យក្លឹប Barcelona
+                    </h1>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <!-- <div class="popup">
+        <div class="loading">
+
+        </div>
+    </div> -->
+</body>
+<script>
+    //Loading 
+    const body = document.body;
+    const Popup = document.createElement('div');
+    const loading = document.createElement('div');
+
+    loading.classList.add('loading');
+    Popup.classList.add('popup');
+    
+    Popup.appendChild(loading);
+    body.appendChild(Popup);
+    
+
+    
+    getMenu();
+    getNews(0);
+    //Get Menu
+    async function getMenu(){
+        let url = "https://reanweb.com/api/teaching/get-menu.php";
+        let txt = `<li>
+                        <a href="" class="active">
+                            <i class="fa-sharp fa-solid fa-house"></i>
+                        </a>
+                    </li>`;
+        let rp = await fetch(url);
+        let rs = await rp.json();
+        rs.forEach((e , i) => {
+            txt +=`<li class="btn-category" data-id="${e['id']}">
+                        <a href="#">
+                            ${e['name']}
+                        </a>
+                    </li>`
+        });
+        document.querySelector('.menu').children[0].innerHTML = txt;
+
+        const btnCategory = document.querySelectorAll('.btn-category');
+        btnCategory.forEach((el) =>{
+            el.addEventListener("click",function(){
+                body.appendChild(Popup);
+                var mid = this.dataset.id;
+                var lis = Array.from(document.querySelector(".menu").children[0].children);
+                lis.forEach ((e) =>{
+                    e.children[0].classList.remove("active");
+                })
+                this.children[0].classList.add('active');
+                getNews(mid);
+            })
+        })
+    }
+    
+    //Get Item
+    async function getNews(mid){
+        let url = `https://reanweb.com/api/teaching/get-news.php?mid=${mid}`;
+        let rp = await fetch(url);
+        let rs = await rp.json();
+        let txt = "";
+        rs.forEach((el , i) =>{
+            txt +=`
+                    <div class="col-xxl-3 item-box">
+                        <div class="box news-box " data-id="${el['id']}">
+                            <img src="${el['img']}" alt="">
+                            <h1>${el['title']}</h1>
+                        </div>
+                    </div>`;
+        });
+        document.querySelector('#item-data').innerHTML = txt;
+        document.querySelector('.popup').remove();
+        var box = Array.from(document.querySelectorAll(".news-box"));
+        newsBox(box);
+    }
+
+    //Get detail
+    async function GetNewsDetail(id){
+        let url = `https://reanweb.com/api/teaching/get-news-detail.php?id=${id}`;
+        let rp = await fetch(url);
+        let rs = await rp.json();
+        var txt = `
+                <div class="col-xxl-12 col-xl-12 col-lg-12 news-detail">
+                    <h1>${rs['title']}</h1>
+                    ${rs['des']}
+                </div>`;
+                
+        document.querySelector("#item-data").innerHTML = txt;
+    }
+
+    const newsBox = (el) => {
+        el.forEach((e) =>{
+            e.addEventListener("click",function(){
+                GetNewsDetail(e.dataset.id);
+            })
+        })
+    }
+
+</script>
+</html>
